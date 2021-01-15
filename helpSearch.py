@@ -2,7 +2,7 @@ from hoshino.service import Service
 from hoshino import *
 import json
 
-json_path="C:/tmp/xcwbot/xcwbot/HoshinoBot_go/hoshino/modules/zfjbot-help-search/data.json"
+json_path="C:/tmp/zfjdhj.github.io/zfjbot-helpWebsite/data.json"
 
 sv = Service('zfjbot-helpSearch')
 
@@ -29,11 +29,11 @@ async def search(bot,ev):
                         # print(commands['command'])
                         if commands['command'].find(keyword) != -1:
                             res.append({'plugin_name':plugin['plugin_name'],'command':commands['command'],'description':commands['description']})
-                            break
+                            continue
                         # print(commands['description'])
                         if commands['description'].find(keyword) != -1:
                             res.append({'plugin_name':plugin['plugin_name'],'command':commands['command'],'description':commands['description']})
-                            break
+                            continue
         logger.info(f'res in search: {len(res)}')
         if len(res) >0:
             for item in res:
