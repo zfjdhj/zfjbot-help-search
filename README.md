@@ -5,7 +5,7 @@ a plugin for hoshino to search the keyword in help_info
 
 ## 插件安装
 
-1. 老一套....
+1. 默认安装方式
 
 2. `helpSearch.py`修改`json_path`路径。
 
