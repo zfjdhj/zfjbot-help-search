@@ -1,3 +1,11 @@
+"""
+Author: zfj
+Date: 2021-03-06 16:17:46
+LastEditTime: 2021-03-06 16:17:46
+LastEditors: zfj
+Description: None
+GitHub: https://github.com/zfjdhj
+"""
 from hoshino.service import Service
 from hoshino import *
 import json
@@ -13,6 +21,7 @@ with open(json_path, "r", encoding="utf8") as fp:
 
 @sv.on_rex(r"^(help|帮助) (.*)$")
 async def search(bot, ev):
+    global json_data
     reply = ""
     res = []
     if ev["match"].group(2).strip():
@@ -59,10 +68,44 @@ async def search(bot, ev):
                                 )
                                 continue
         logger.info(f"res in search: {len(res)}")
-        if len(res) > 0:
+        # if len(res) > 0:
+        #     for index, item in enumerate(res):
+        #         reply += f"{index+1}. {item['command']}: {item['description']}\n"
+        #     reply += f"============\n猫猫共查询到结果{len(res)}条"
+        #     await bot.send(ev, reply)
+
+        if 0 < len(res) <= 20:
             for index, item in enumerate(res):
                 reply += f"{index+1}. {item['command']}: {item['description']}\n"
             reply += f"============\n猫猫共查询到结果{len(res)}条"
             await bot.send(ev, reply)
+        elif 20 < len(res) <= 60:
+            li = []
+            for index, item in enumerate(res):
+                reply += f"{index+1}. {item['command']}: {item['description']}\n"
+                if (index + 1) % 20 == 0:
+                    data = {"type": "node", "data": {"name": "猫猫", "uin": "1475166415", "content": reply}}
+                    li.append(data)
+                    reply = ""
+            reply += f"============\n猫猫共查询到结果{len(res)}条"
+            data = {"type": "node", "data": {"name": "猫猫", "uin": "1475166415", "content": reply}}
+            li.append(data)
+            gid = ev.group_id
+            await bot.send_group_forward_msg(group_id=gid, messages=li)
+        elif 60 < len(res):
+            li = []
+            for index, item in enumerate(res):
+                reply += f"{index+1}. {item['command']}: {item['description']}\n"
+                if (index + 1) % 5 == 0:
+                    data = {"type": "node", "data": {"name": "猫猫", "uin": "1475166415", "content": reply}}
+                    li.append(data)
+                    reply = ""
+            reply += f"============\n猫猫共查询到结果{len(res)}条"
+            data = {"type": "node", "data": {"name": "猫猫", "uin": "1475166415", "content": reply}}
+            li.append(data)
+            gid = ev.group_id
+            await bot.send_group_forward_msg(group_id=gid, messages=li)
         else:
-            await bot.send(ev, "猫猫没有找到呢~喵~")
+            with open(json_path, "r", encoding="utf8") as fp:
+                json_data = json.load(fp)
+            await bot.send(ev, "猫猫没有找到呢~喵~\n请再次尝试或者联系管理员")
